@@ -2,6 +2,8 @@ package com.oocl.springbootdemo.service;
 
 import static org.junit.Assert.*;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +65,12 @@ public class UserServiceTest {
 		String name = "gentle";
 		int result = userService.deleteUserByName(name);
 		assertEquals(1, result);
+	}
+	
+	@Test
+	public void should_return_all_user_when_select_all_user() {
+		List<User> users = userService.getAllUser();
+		assertEquals(2, users.size());
 	}
 
 

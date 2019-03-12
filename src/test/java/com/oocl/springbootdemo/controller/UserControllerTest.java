@@ -1,8 +1,12 @@
 package com.oocl.springbootdemo.controller;
 
+import static org.junit.Assert.assertEquals;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.io.UnsupportedEncodingException;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -14,6 +18,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+
+import com.oocl.springbootdemo.model.User;
 
 
 @SpringBootTest
@@ -61,4 +67,12 @@ public class UserControllerTest {
 		String result = mvcResult.getResponse().getContentAsString();
 		System.out.println(result);
 	}
+	
+	@Test
+	public void should_return_all_user_when_select_all_user() throws Exception {
+		MvcResult mvcResult = mvc.perform(get("/users")).andExpect(status().isOk()).andReturn();
+		String result = mvcResult.getResponse().getContentAsString();
+		System.out.println(result);
+	}
+	
 }

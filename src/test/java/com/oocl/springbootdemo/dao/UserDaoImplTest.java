@@ -2,6 +2,8 @@ package com.oocl.springbootdemo.dao;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +65,12 @@ public class UserDaoImplTest {
 		String name = "gentle";
 		int result = userDao.deleteUserByName(name);
 		assertEquals(1, result);
+	}
+	
+	@Test
+	public void should_return_all_user_when_select_all_user() {
+		List<User> users = userDao.getAllUser();
+		assertEquals(2, users.size());
 	}
 
 }

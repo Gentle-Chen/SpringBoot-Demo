@@ -6,7 +6,7 @@ public class Response {
 	
 	private String errorMsg;
 	
-	private User result;
+	private Object result;
 	
 	private int updateCount;
 
@@ -26,11 +26,11 @@ public class Response {
 		this.errorMsg = errorMsg;
 	}
 
-	public User getResult() {
+	public Object getResult() {
 		return result;
 	}
 
-	public void setResult(User result) {
+	public void setResult(Object result) {
 		this.result = result;
 	}
 

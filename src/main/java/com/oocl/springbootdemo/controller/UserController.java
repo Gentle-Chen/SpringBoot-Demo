@@ -1,5 +1,7 @@
 package com.oocl.springbootdemo.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +43,21 @@ public class UserController {
 			User user = userService.getUserByName(name);
 			response.setStatus(GlobalConstant.SUCCESS);
 			response.setResult(user);
+		}catch (Exception e) {
+			// TODO: handle exception
+			response.setStatus("fail");
+			response.setErrorMsg(e.getMessage() + " for select");
+		}
+		return response;
+	}
+	
+	@GetMapping("/users")
+	public Response getAllUser() {
+		Response response = new Response();
+		try{
+			List<User> users = userService.getAllUser();
+			response.setStatus(GlobalConstant.SUCCESS);
+			response.setResult(users);
 		}catch (Exception e) {
 			// TODO: handle exception
 			response.setStatus("fail");

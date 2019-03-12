@@ -73,4 +73,10 @@ public class UserDaoImpl implements UserDao {
 		}
 	}
 
+	@Override
+	public List<User> getAllUser() {
+		List<User> users = template.findAll(User.class, collectionName);
+		return users;
+	}
+
 }

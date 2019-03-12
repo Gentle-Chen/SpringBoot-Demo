@@ -1,5 +1,7 @@
 package com.oocl.springbootdemo.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +37,12 @@ public class UserServiceImpl implements UserService {
 	public int deleteUserByName(String name) {
 		// TODO Auto-generated method stub
 		return userDao.deleteUserByName(name);
+	}
+
+	@Override
+	public List<User> getAllUser() {
+		// TODO Auto-generated method stub
+		return userDao.getAllUser();
 	}
 
 }
