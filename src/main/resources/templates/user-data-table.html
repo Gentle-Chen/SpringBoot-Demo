@@ -519,9 +519,6 @@
 									<!--Primary button with a ripple effect-->
 									<button type="button" @click="searchByName" class="btn btn-primary"> Search </button>
 
-									<!--Information button with a ripple effect-->
-									<button type="button" class="btn btn-info"> Info </button>
-
 									<!--Success button with a ripple effect-->
 									<button type="button" @click="insertUser" class="btn btn-success"> Add </button>
 
@@ -530,6 +527,9 @@
 
 									<!--Danger button with a ripple effect -->
 									<button type="button" @click="deleteUser" class="btn btn-danger"> Delete </button>
+
+									<!-- Default button with a ripple effect -->
+									<button type="button" @click="resetForm" class="btn btn-info" style="background-color: #4d575d"> Reset </button >
 								</div>
 							</div> <!--Bootstrap button example end-->
 
@@ -551,6 +551,8 @@
 				<h2>Query User Data Table</h2>
 			</div>
 			<p>Query All Users:<code>GET</code>:<code>/users</code></p>
+			<!--Information button with a ripple effect-->
+			<button type="button" @click="getUsers" class="btn btn-info"> Refresh Table </button>
 		</div> <!-- responsive table title and description end -->
 
 		<!-- responsive table code and example -->
@@ -566,7 +568,7 @@
 					</tr>
 					</thead>
 					<tbody v-for="item in users">
-					<tr>
+					<tr v-if="!(isEmpty(item.account) && isEmpty(item.name) && isEmpty(item.gender))" @click="setUser({status: 'success', result: item, updateCount: 0})">
 						<td>{{ item.account }}</td>
 						<td>{{ item.name }}</td>
 						<td>{{ item.gender }}</td>
@@ -661,6 +663,9 @@
         errorMsg: '',
 				msg: ''
 			},
+      created() {
+			  this.getUsers();
+			},
 			methods: {
 			  resetMsg(){
           this.errorMsg = '';
@@ -672,6 +677,15 @@
         setErrorMsg(errorMsg){
           this.errorMsg = errorMsg;
         },
+				resetForm(){
+          this.resetMsg();
+          this.account = '';
+          this.name = '';
+          this.gender = '';
+				},
+				test(data){
+			    console.log(data);
+				},
 			  setUser(data){
 			    if(data.status === 'success'){
             this.account = data.result.account;
@@ -683,6 +697,29 @@
             console.log('Error:' + data.errorMsg, data.updateCount);
 					}
 				},
+				isEmpty(data){
+			    return data === null || data === '';
+				},
+        setUsers(data){
+          if(data.status === 'success'){
+            this.users = data.result;
+            console.log('Success:', this.users, data.updateCount);
+          }else{
+            console.log('Error:' + data.errorMsg, data.updateCount);
+          }
+        },
+				getUsers(){
+          console.log(this.name);
+          var self = this;
+          $.ajax({
+            type: "GET",
+            url: "/users",
+            dataType: "json",
+            success: function(data){
+              self.setUsers(data);
+            }
+          });
+        },
 				searchByName(){
 			    this.resetMsg();
 					console.log(this.name);
@@ -715,6 +752,7 @@
               console.log(data);
               if(data.status === 'success'){
                 self.setMsg('insert success');
+                self.getUsers();
 							}else{
                 self.setErrorMsg(data.errorMsg)
 							}
@@ -739,30 +777,32 @@
               console.log(data);
               if(data.status === 'success'){
                 self.setMsg('update success');
+                self.getUsers();
               }else{
                 self.setErrorMsg(data.errorMsg)
               }
             }
           });
         },
-      deleteUser(){
-        this.resetMsg();
-        console.log(this.name);
-        var self = this;
-        $.ajax({
-          type: "DELETE",
-          url: "/user/" + this.name,
-          dataType: "json",
-          success: function(data){
-            console.log(data);
-            if(data.status === 'success'){
-              self.setMsg('delte success');
-            }else{
-              self.setErrorMsg(data.errorMsg)
-            }
-          }
-        });
-      }
+				deleteUser(){
+					this.resetMsg();
+					console.log(this.name);
+					var self = this;
+					$.ajax({
+						type: "DELETE",
+						url: "/user/" + this.name,
+						dataType: "json",
+						success: function(data){
+							console.log(data);
+							if(data.status === 'success'){
+								self.setMsg('delete success');
+                self.getUsers();
+							}else{
+								self.setErrorMsg(data.errorMsg)
+							}
+						}
+					});
+				}
 			}
 		})
 	});
