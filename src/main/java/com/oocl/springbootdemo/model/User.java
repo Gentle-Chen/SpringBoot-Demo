@@ -1,5 +1,8 @@
 package com.oocl.springbootdemo.model;
 
+import java.io.IOException;
+import org.codehaus.jackson.map.ObjectMapper;
+
 public class User {
 	
 	private String account;
@@ -49,6 +52,24 @@ public class User {
 		return "User [account=" + account + ", name=" + name + ", gender=" + gender + "]";
 	}
 	
-	
+	public static String getJson(User user) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			return objectMapper.writeValueAsString(user);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 
+	public static User getUser(String json) {
+		ObjectMapper objectMapper = new ObjectMapper();
+		try {
+			User user = objectMapper.readValue(json, User.class);
+			return user;
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 }
