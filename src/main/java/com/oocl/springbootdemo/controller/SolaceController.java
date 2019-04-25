@@ -51,6 +51,32 @@ public class SolaceController {
         return response;
     }
 
+    @PostMapping("/sendTopic")
+    public Response sendTopic(@RequestBody User user) {
+        Response response = new Response();
+        final JCSMPProperties properties = new JCSMPProperties();
+        properties.setProperty(JCSMPProperties.HOST, hostname);
+        properties.setProperty(JCSMPProperties.USERNAME, username);
+        properties.setProperty(JCSMPProperties.VPN_NAME, vpnName);
+        properties.setProperty(JCSMPProperties.PASSWORD, password);
+
+        final JCSMPSession session;
+        try {
+            session = JCSMPFactory.onlyInstance().createSession(properties);
+            session.connect();
+
+            this.sendTopicObject(session, User.getJson(user));
+        } catch (InvalidPropertiesException e) {
+            e.printStackTrace();
+        } catch (JCSMPException e) {
+            e.printStackTrace();
+        }
+
+        response.setStatus(GlobalConstant.SUCCESS);
+        response.setResult(user);
+        return response;
+    }
+
     private void sendQueueObject(JCSMPSession session, String json) throws JCSMPException {
         XMLMessageProducer prod = session.getMessageProducer(new JCSMPStreamingPublishEventHandler() {
 

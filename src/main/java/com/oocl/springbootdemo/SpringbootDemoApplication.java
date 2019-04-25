@@ -8,6 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageHeaders;
+import org.springframework.stereotype.Component;
 
 import java.util.*;
 
@@ -18,7 +19,7 @@ public class SpringbootDemoApplication {
         SpringApplication.run(SpringbootDemoApplication.class, args);
     }
 
-    //    @Component
+    @Component
     static class MessageHandler {
 
         private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
