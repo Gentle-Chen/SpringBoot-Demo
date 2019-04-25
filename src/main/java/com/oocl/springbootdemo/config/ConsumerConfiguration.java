@@ -35,7 +35,7 @@ public class ConsumerConfiguration {
 
     @Bean
     public Topic topic1() {
-        return JCSMPFactory.onlyInstance().createTopic("tutorial/topic");
+        return JCSMPFactory.onlyInstance().createTopic("*/topic");
     }
 
     @Bean
