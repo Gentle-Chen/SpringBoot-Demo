@@ -19,6 +19,8 @@ public class SolaceController {
 
     @Autowired private AutoConfigService autoConfigService;
 
+    @Autowired private JCSMPSession session;
+
     @Value("${solace.jms.host}") private String hostname;
     @Value("${solace.jms.msgVpn}") private String vpnName;
     @Value("${solace.jms.clientUsername}") private String username;
@@ -26,25 +28,11 @@ public class SolaceController {
     @Value("${solace.jms.demoQueueName}") private String queueName;
 
     @PostMapping("/sendQueue")
-    public Response send(@RequestBody User user) {
+    public Response send(@RequestBody User user) throws JCSMPException {
         Response response = new Response();
-        final JCSMPProperties properties = new JCSMPProperties();
-        properties.setProperty(JCSMPProperties.HOST, hostname);
-        properties.setProperty(JCSMPProperties.USERNAME, username);
-        properties.setProperty(JCSMPProperties.VPN_NAME, vpnName);
-        properties.setProperty(JCSMPProperties.PASSWORD, password);
 
-        final JCSMPSession session;
-        try {
-            session = JCSMPFactory.onlyInstance().createSession(properties);
-            session.connect();
-
-            this.sendQueueObject(session, User.getJson(user));
-        } catch (InvalidPropertiesException e) {
-            e.printStackTrace();
-        } catch (JCSMPException e) {
-            e.printStackTrace();
-        }
+        sendQueueObject(session, User.getJson(user), queueName);
+        //        sendQueueObject(session, User.getJson(user), "tutorial/queue1");
 
         response.setStatus(GlobalConstant.SUCCESS);
         response.setResult(user);
@@ -52,32 +40,17 @@ public class SolaceController {
     }
 
     @PostMapping("/sendTopic")
-    public Response sendTopic(@RequestBody User user) {
+    public Response sendTopic(@RequestBody User user) throws JCSMPException {
         Response response = new Response();
-        final JCSMPProperties properties = new JCSMPProperties();
-        properties.setProperty(JCSMPProperties.HOST, hostname);
-        properties.setProperty(JCSMPProperties.USERNAME, username);
-        properties.setProperty(JCSMPProperties.VPN_NAME, vpnName);
-        properties.setProperty(JCSMPProperties.PASSWORD, password);
 
-        final JCSMPSession session;
-        try {
-            session = JCSMPFactory.onlyInstance().createSession(properties);
-            session.connect();
-
-            this.sendTopicObject(session, User.getJson(user));
-        } catch (InvalidPropertiesException e) {
-            e.printStackTrace();
-        } catch (JCSMPException e) {
-            e.printStackTrace();
-        }
+        this.sendTopicObject(session, User.getJson(user));
 
         response.setStatus(GlobalConstant.SUCCESS);
         response.setResult(user);
         return response;
     }
 
-    private void sendQueueObject(JCSMPSession session, String json) throws JCSMPException {
+    public static void sendQueueObject(JCSMPSession session, String json, String queueName) throws JCSMPException {
         XMLMessageProducer prod = session.getMessageProducer(new JCSMPStreamingPublishEventHandler() {
 
             @Override
@@ -93,12 +66,14 @@ public class SolaceController {
 
         //        final Topic topic = JCSMPFactory.onlyInstance().createTopic("tutorial/topic");
         final Queue queue = JCSMPFactory.onlyInstance().createQueue(queueName);
+        final Queue queue1 = JCSMPFactory.onlyInstance().createQueue("Q/tutorial");
         TextMessage msg = JCSMPFactory.onlyInstance().createMessage(TextMessage.class);
         msg.setText(json);
         prod.send(msg, queue);
+        prod.send(msg, queue1);
     }
 
-    private void sendTopicObject(JCSMPSession session, String json) throws JCSMPException {
+    void sendTopicObject(JCSMPSession session, String json) throws JCSMPException {
         XMLMessageProducer prod = session.getMessageProducer(new JCSMPStreamingPublishEventHandler() {
 
             @Override
