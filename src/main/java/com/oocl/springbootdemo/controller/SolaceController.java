@@ -87,7 +87,7 @@ public class SolaceController {
         final Topic topic = JCSMPFactory.onlyInstance().createTopic(topicName);
 
         TextMessage msg = JCSMPFactory.onlyInstance().createMessage(TextMessage.class);
-        msg.setText(topicName + "收到: tony test topic matcher");
+        msg.setText(topicName + " 收到: tony test topic matcher");
         prod.send(msg, topic);
     }
 }
