@@ -39,13 +39,13 @@ public class SolaceController {
     }
 
     @PostMapping("/sendTopic")
-    public Response sendTopic(@RequestBody User user) throws JCSMPException {
+    public Response sendTopic(@RequestBody String topicName) throws JCSMPException {
         Response response = new Response();
 
-        this.sendTopicObject(session, User.getJson(user));
+        this.sendTopicObject(session, topicName);
 
         response.setStatus(GlobalConstant.SUCCESS);
-        response.setResult(user);
+        response.setResult(topicName);
         return response;
     }
 
@@ -70,7 +70,7 @@ public class SolaceController {
         prod.send(msg, queue);
     }
 
-    void sendTopicObject(JCSMPSession session, String json) throws JCSMPException {
+    void sendTopicObject(JCSMPSession session, String topicName) throws JCSMPException {
         XMLMessageProducer prod = session.getMessageProducer(new JCSMPStreamingPublishEventHandler() {
 
             @Override
@@ -84,10 +84,10 @@ public class SolaceController {
             }
         });
 
-        final Topic topic = JCSMPFactory.onlyInstance().createTopic("tutorial/topic");
+        final Topic topic = JCSMPFactory.onlyInstance().createTopic(topicName);
 
         TextMessage msg = JCSMPFactory.onlyInstance().createMessage(TextMessage.class);
-        msg.setText(json);
+        msg.setText(topicName + "收到: tony test topic matcher");
         prod.send(msg, topic);
     }
 }
