@@ -25,7 +25,7 @@ public class SpringbootDemoApplication {
         private static final Logger logger = LoggerFactory.getLogger(MessageHandler.class);
 
 		// Retrieve the name of the queue from the application.properties file
-        @JmsListener(destination = "${solace.jms.demoQueueName}")
+        @JmsListener(destination = "${solace.jms.demoQueueName1}")
         public void processMsg(Message msg) {
             StringBuffer msgAsStr = new StringBuffer("============= Received \nHeaders:");
             MessageHeaders hdrs = msg.getHeaders();

@@ -32,7 +32,6 @@ public class SolaceController {
         Response response = new Response();
 
         sendQueueObject(session, User.getJson(user), queueName);
-        //        sendQueueObject(session, User.getJson(user), "tutorial/queue1");
 
         response.setStatus(GlobalConstant.SUCCESS);
         response.setResult(user);
@@ -66,11 +65,9 @@ public class SolaceController {
 
         //        final Topic topic = JCSMPFactory.onlyInstance().createTopic("tutorial/topic");
         final Queue queue = JCSMPFactory.onlyInstance().createQueue(queueName);
-        final Queue queue1 = JCSMPFactory.onlyInstance().createQueue("Q/tutorial");
         TextMessage msg = JCSMPFactory.onlyInstance().createMessage(TextMessage.class);
-        msg.setText(json);
+        msg.setText(json + "\n");
         prod.send(msg, queue);
-        prod.send(msg, queue1);
     }
 
     void sendTopicObject(JCSMPSession session, String json) throws JCSMPException {
